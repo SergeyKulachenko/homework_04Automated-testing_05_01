@@ -71,16 +71,19 @@ class MoneyTransferTest {
     }
 
     @Test
-    void errorExpectedWishLetterEBriefInName() {
+    void getTrueWishLetterEBriefInName() {
         $("[placeholder=Город]").setValue(DataUser.cityForInput());
         int inDays = 4;
         dataInput(inDays);
         $("[data-test-id=phone]").$("[name=phone]").setValue(DataUser.dataPhone());
-        $("[data-test-id=name].input_type_text .input__control").setValue("Ерёма Ершов");
-
+        $("[data-test-id=name].input_type_text .input__control").setValue(DataUser.dataNameWishLetterEBrief());
         $("[class=checkbox__box]").click();
         $$("[class=button__text]").find(exactText("Запланировать")).click();
-        $("[data-test-id=name] .input__sub").shouldHave
-                (exactTextCaseSensitive("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+        $("[data-test-id=success-notification]").$("[class=notification__content]")
+                .shouldHave(textCaseSensitive("Встреча успешно запланирована на " + DataUser.dataInput(inDays)));
+        $$("[class=button__text]").find(exactText("Запланировать")).click();
+        $$("[class=button__text]").find(exactText("Перепланировать")).click();
+        $("[data-test-id=success-notification]").$("[class=notification__content]")
+                .shouldHave(textCaseSensitive("Встреча успешно запланирована на " + DataUser.dataInput(inDays)));
     }
 }
